@@ -1,17 +1,15 @@
 import csv
 import pandas as pd
 import numpy as np
+from datetime import datetime
+import time
 from pprint import pprint
 
 
-# def
+def read_data(name):
+    stations, starts, ends = [], [], []
 
-files = list(map(str, range(201901, 201913)))
-postfix = '-citibike-tripdata'
-
-total_data = set()
-for name in files:
-    with open('./data/' + name + postfix + '.csv', 'r') as f:
+    with open('./data/' + name, 'r') as f:
         print(name)
 
         reader = csv.reader(f)
@@ -21,18 +19,61 @@ for name in files:
             else:
                 data = dict(zip(labels, row))
 
-                # total_data
-                start_selected = ['start station id', 'start station name', 'start station latitude', 'start station longitude']
-                end_selected = ['end station id', 'end station name', 'end station latitude', 'end station longitude']
+                if data['start station id'] not in stations:
+                    stations.append(data['start station id'])
+                if data['end station id'] not in stations:
+                    stations.append(data['end station id'])
+                starts.append({'id': data['start station id'], 'time': data['starttime']})
+                ends.append({'id': data['end station id'], 'time': data['stoptime']})
 
-                start_data = [data[key] for key in start_selected]
-                end_data = [data[key] for key in end_selected]
+    return stations, starts, ends
 
-                total_data.add(tuple(start_data))
-                total_data.add(tuple(end_data))
 
-listed_total_data = [list(elem) for elem in total_data]
-# pprint(list(listed_total_data))
+def preprocess(ids, starts, ends):
+    bikes = dict()
+    for i, row_start in enumerate(starts):
+        row_end = ends[i]
 
-dataframe = pd.DataFrame(listed_total_data)
-dataframe.to_csv('./data/stations.csv', header=['id', 'name', 'latitude', 'longitude'], index=False)
+        # start
+        dt = datetime.strptime(row_start['time'], '%Y-%m-%d %H:%M:%S.%f')
+        month, day, hour, _, weekday = dt.month, dt.day, dt.hour, dt.minute, dt.weekday()  # JavaScript 0 = Sunday, Python 0 = Monday
+
+        key = (month, weekday, hour, row_start['id'], day)
+
+        if key not in bikes:
+            bikes[key] = 0
+        bikes[key] -= 1  # out
+
+        # end
+        dt = datetime.strptime(row_end['time'], '%Y-%m-%d %H:%M:%S.%f')
+        month, day, hour, minute, weekday = dt.month, dt.day, dt.hour, dt.minute, dt.weekday()
+
+        key = (month, weekday, hour, row_end['id'], day)
+
+        if key not in bikes:
+            bikes[key] = 0
+        bikes[key] += 1  # in
+
+    return bikes
+
+
+if __name__ == "__main__":
+    file_names = list(map(str, range(201901, 201913)))  # TODO: more data
+    postfix = '-citibike-tripdata.csv'
+
+    for file_name in file_names:
+        ids, starts, ends = read_data(file_name + postfix)
+
+        bikes = preprocess(ids, starts, ends)
+        # pprint(bikes)
+
+        refined_data = []
+        for item in bikes.items():
+            key, value = item
+
+            refined = [elem for elem in key]
+            refined.append(value)
+            refined_data.append(refined)  # [month, weekday, hour, id, amount]
+
+        dataframe = pd.DataFrame(refined_data)
+        dataframe.to_csv('./data/' + file_name + '-refined.csv', header=['month', 'weekday', 'hour', 'id', 'day', 'amount'], index=False)
