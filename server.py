@@ -3,10 +3,12 @@ from training import build_model, fit_transform
 import numpy as np
 from keras.optimizers import Adam
 from keras.models import load_model
-from flask import Flask, request, jsonify
 from random import uniform, seed
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route('/')
