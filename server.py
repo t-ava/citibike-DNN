@@ -4,7 +4,7 @@ import numpy as np
 from keras.optimizers import Adam
 from keras.models import load_model
 from flask import Flask, request, jsonify
-from random import uniform
+from random import uniform, seed
 
 app = Flask(__name__)
 
@@ -34,6 +34,7 @@ def post():
         # res = [e - 2 for e in res]  # Adjusting
 
         loss = 2
+        seed(data["month"] * 1000 + data["weekday"] * 100 + data["hour"])
         res = [e + uniform(-loss, loss) for e in res]  # Adjusting loss
     else:
         pass
