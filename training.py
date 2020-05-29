@@ -150,6 +150,7 @@ if __name__ == "__main__":
     refined_ids = fit_transform(refined_ids.reshape(-1, 1), max_val, min_val)
 
     pred = model.predict([rand_times, refined_ids])  # month, weekday, hour | id
+    # TODO: if pred < 0, pred -= 1
 
     from pprint import pprint
     pprint(np.around(np.hstack((
