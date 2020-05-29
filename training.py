@@ -5,6 +5,7 @@ import csv
 import numpy as np
 from sklearn.model_selection import train_test_split
 from random import randint, random
+import copy
 
 
 def read_data(name):
@@ -144,8 +145,14 @@ if __name__ == "__main__":
 
     """inference"""
     rand_times = np.array([[randint(1, 12), randint(0, 6), randint(0, 23)] for _ in range(10)])
-    rand_ids = np.array([[random()] for _ in range(10)])
-    refined_ids = fit_transform(rand_ids.reshape(-1, 1), max_val, min_val)
+    rand_ids = np.array([[randint(72, 3911)] for _ in range(10)])
+    refined_ids = copy.deepcopy(rand_ids)
+    refined_ids = fit_transform(refined_ids.reshape(-1, 1), max_val, min_val)
 
     pred = model.predict([rand_times, refined_ids])  # month, weekday, hour | id
-    print(np.around(np.hstack((rand_times, rand_ids, pred))))  # month, weekday, hour, id, pred
+
+    from pprint import pprint
+    pprint(np.around(np.hstack((
+        rand_times,
+        rand_ids,
+        pred))))  # month, weekday, hour, id, pred

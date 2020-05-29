@@ -2,7 +2,7 @@
 DNN models for citibike prediction
 
 ## loss
-We use MAE(Mean Absolute Error).
+We use MAE(Mean Absolute Error):
 ```
 loss: 1.9897
 ```
