@@ -1,6 +1,6 @@
 from keras.layers import Input, Dense, Dropout, concatenate
 from keras.models import Model, load_model
-from keras.optimizers import RMSprop
+from keras.optimizers import Adam
 import csv
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -49,16 +49,16 @@ def build_model(input_shapes, n_output):
     input_shape_time, input_shape_id = input_shapes
 
     x1 = Input(shape=input_shape_time)
-    h1 = Dense(64, activation='relu', kernel_initializer='he_normal')(x1)
-    h1 = Dropout(0.5)(h1)
+    h1 = Dense(10, activation='relu', kernel_initializer='he_normal')(x1)
+    # h1 = Dropout(0.5)(h1)
 
     x2 = Input(shape=input_shape_id)
-    h2 = Dense(64)(x2)
-    h2 = Dropout(0.5)(h2)
+    h2 = Dense(10)(x2)
+    # h2 = Dropout(0.5)(h2)
 
     c = concatenate([h1, h2])
-    h = Dense(64, activation='relu', kernel_initializer='he_normal')(c)
-    h = Dropout(0.5)(h)
+    h = Dense(6, activation='relu', kernel_initializer='he_normal')(c)
+    # h = Dropout(0.5)(h)
     y = Dense(n_output, activation='linear', name='y')(h)
 
     return Model(
@@ -78,7 +78,7 @@ if __name__ == "__main__":
 
     model = build_model(input_shapes, output_shape)
     # model.summary()  # TODO: image
-    model.compile(loss='mae', optimizer=RMSprop(), metrics=['mse', 'acc'])
+    model.compile(loss='mae', optimizer=Adam(), metrics=['mse', 'acc'])
     print(">>> compiling model complete")
 
     if training:
@@ -137,14 +137,15 @@ if __name__ == "__main__":
         print(metrics)
 
     else:
+        max_val, min_val = 3911, 72  # max: 3911 min: 72
+
         model = load_model('citibike_DNN_model.h5')
         print(">>> loading model complete")
 
     """inference"""
-    rand_times = [[randint(1, 12), randint(0, 6), randint(0, 23)] for _ in range(10)]
-    rand_ids = [[random()] for _ in range(10)]
+    rand_times = np.array([[randint(1, 12), randint(0, 6), randint(0, 23)] for _ in range(10)])
+    rand_ids = np.array([[random()] for _ in range(10)])
+    refined_ids = fit_transform(rand_ids.reshape(-1, 1), max_val, min_val)
 
-    pred = model.predict([rand_times, rand_ids])  # month, weekday, hour | id
-
-    from pprint import pprint
-    pprint(pred)
+    pred = model.predict([rand_times, refined_ids])  # month, weekday, hour | id
+    print(np.around(np.hstack((rand_times, rand_ids, pred))))  # month, weekday, hour, id, pred
