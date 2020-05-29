@@ -144,13 +144,15 @@ if __name__ == "__main__":
         print(">>> loading model complete")
 
     """inference"""
-    rand_times = np.array([[randint(1, 12), randint(0, 6), randint(0, 23)] for _ in range(10)])
-    rand_ids = np.array([[randint(72, 3911)] for _ in range(10)])
+    INFERENCE_NUM = 100
+    rand_times = np.array([[randint(1, 12), randint(0, 6), randint(0, 23)] for _ in range(INFERENCE_NUM)])
+    rand_ids = np.array([[randint(72, 3911)] for _ in range(INFERENCE_NUM)])
     refined_ids = copy.deepcopy(rand_ids)
     refined_ids = fit_transform(refined_ids.reshape(-1, 1), max_val, min_val)
 
     pred = model.predict([rand_times, refined_ids])  # month, weekday, hour | id
     # TODO: if pred < 0, pred -= 1
+    # implementing at server.py
 
     from pprint import pprint
     pprint(np.around(np.hstack((
