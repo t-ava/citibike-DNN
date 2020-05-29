@@ -60,4 +60,4 @@ if __name__ == '__main__':
     """inference"""
     max_val, min_val = 3911, 72  # max: 3911 min: 72
 
-    app.run()
+    app.run(host='0.0.0.0', port=8327)
