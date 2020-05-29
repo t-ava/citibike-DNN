@@ -4,6 +4,7 @@ import numpy as np
 from keras.optimizers import Adam
 from keras.models import load_model
 from flask import Flask, request, jsonify
+from random import uniform
 
 app = Flask(__name__)
 
@@ -24,9 +25,23 @@ def post():
     ids = np.array([[e] for e in data["ids"]])
     refined_ids = fit_transform(ids.reshape(-1, 1), max_val, min_val)
     pred = model.predict([times, refined_ids])  # month, weekday, hour | id
-
     print(pred)
-    return jsonify({"pred": pred.tolist()})
+
+    pred = pred.tolist()
+    res = [e[0] for e in pred]
+
+    if data["adj"] != 0:
+        # res = [e - 2 for e in res]  # Adjusting
+
+        loss = 2
+        res = [e + uniform(-loss, loss) for e in res]  # Adjusting loss
+    else:
+        pass
+
+    res = [round(e) if e > 0 else round(e) - 1 for e in res]  # Adjusting minus values
+    print(res)
+
+    return jsonify({"res": res})
 
 
 if __name__ == '__main__':
