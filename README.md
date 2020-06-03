@@ -61,5 +61,5 @@ curl -X POST -H 'Content-Type: application/json' http://127.0.0.1:5000/post -d '
 ```
 
 `adj` is the flag of reflecting model loss:
-       * `adj` == 1: adjusting prediction results using loss (1.9897) .
-       * `adj` == 0: retuning bare prediction results.
+* `adj` == 1: adjusting prediction results using loss (1.9897) .
+* `adj` == 0: retuning bare prediction results.
