@@ -50,6 +50,8 @@ array([[ 1.000e+01,  0.000e+00,  9.000e+00,  2.230e+02,  0.000e+00],
 
 # Inference server
 
+![serving](./images/serving.png)
+
 Run `python server.py`
 
 ## Request
