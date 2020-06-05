@@ -62,7 +62,7 @@ Run `python server.py`
 
 ## Request
 ```bash
-curl -X POST -H 'Content-Type: application/json' http://127.0.0.1:5000/post -d '{"month": 12, "weekday": 4, "hour": 6, "ids": [2800, 123, 458, 1311, 3000, 1], "adj": 1}'
+curl -X POST -H 'Content-Type: application/json' http://127.0.0.1:8327/post -d '{"month": 12, "weekday": 4, "hour": 6, "ids": [2800, 123, 458, 1311, 3000, 1], "adj": 1}'
 ```
 ```
 {"res":[0,1,-1,2,-2,0]}
