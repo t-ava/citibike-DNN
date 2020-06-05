@@ -1,6 +1,12 @@
 # citibike-DNN
 DNN models for citibike prediction
 
+# Install requirements
+
+```
+pip install -r requirements.txt
+```
+
 # Preprocessing data
 
 Download citibike data via [Link](https://www.citibikenyc.com/system-data).
