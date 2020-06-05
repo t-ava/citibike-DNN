@@ -26,8 +26,8 @@ Run `python training.py` .
 
 * Inputs: month, weekday, hour, station_id.
 * Outputs: `pred` . number of devices in the station.
-       * `pred` > 0: there are spare `pred` devices in the station.
-       * `pred` < 0: require extra `|pred|` devices in the station.
+     * `pred` > 0: there are spare `pred` devices in the station.
+     * `pred` < 0: require extra `|pred|` devices in the station.
 
 We use MAE(Mean Absolute Error) to evaluate our model:
 ```
