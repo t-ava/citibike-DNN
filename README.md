@@ -10,19 +10,21 @@ pip install -r requirements.txt
 # Preprocessing data
 
 Download citibike data via [Link](https://www.citibikenyc.com/system-data).
-* Download `201901-citibike-tripdata.csv` ~ `201912-citibike-tripdata.csv`
+* Download `201901-citibike-tripdata.csv` ~ `201912-citibike-tripdata.csv` at `./data/` .
 
 Then, run `python preprocess.py` .
 
 # Training model
 
-Set training param. in [`training.py`](https://github.com/t-ava/citibike-DNN/blob/master/training.py#L72) like below:
+You can skip this **# Training model** with `citibike_DNN_model.h5` (pre-trained weights) . Go **# Evaluation**.
+
+If you want to train model, set training param. in [`training.py`](https://github.com/t-ava/citibike-DNN/blob/master/training.py#L72) like below:
 
 ```python
 training = True
 ```
 
-Run `python training.py` .
+Run `python training.py` . You need preprocessed data in `./data/` to train model.
 
 * Inputs: month, weekday, hour, station_id.
 * Outputs: `pred` . number of devices in the station.
@@ -36,7 +38,13 @@ loss: 1.9897
 
 # Evaluation
 
-Run `python training.py` .
+Run `python training.py` with
+
+```python
+training = True
+```
+
+as same as a [default value](https://github.com/t-ava/citibike-DNN/blob/master/training.py#L72).
 
 ```
 >>> loading model complete
